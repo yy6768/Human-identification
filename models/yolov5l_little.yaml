@@ -1,0 +1,86 @@
+# YOLOv5 🚀 by Ultralytics, GPL-3.0 license
+
+# Parameters
+nc: 1  # number of classes
+depth_multiple: 0.33  # model depth multiple
+width_multiple: 0.50 # layer channel multiple
+anchors:
+  - [ 2,3, 4, 15, 17,8 ]  # P2/8
+  - [ 19, 46, 37, 97, 65, 162 ]  # P3/8
+  - [ 90, 290, 140, 413, 168, 246 ]  # P4/16
+  - [ 220, 449, 332, 512, 524, 589 ]  # P5/32
+
+# YOLOv5 v6.0 backbone
+
+# compared with little_1, this one changes seC3 to seseC3
+backbone:
+  # [from, number, module, args]
+  # 四个参数
+  # from：输入来自上方第几层网络
+  # number：这层使用的网络模块个数
+  # module：使用的网络模块
+  # args：与选择的网络层结构对应的参数,即[ch_out, kernel, stride, padding, groups]=[输出通道数，卷积核尺寸，步长]
+  [ [ -1, 1, Focus, [ 64, 3 ] ],  # 0-P1/2
+    [ -1, 1, Conv, [ 128, 3, 2 ] ],  # 1-P2/4
+    [ -1, 3, seC3, [ 128 ] ], # 2
+
+    [ -1, 1, Conv, [ 256, 3, 2 ] ],  # 3-P3/8
+    [ -1, 9, seC3, [ 256 ] ],  # 4
+
+    [ -1, 1, Conv, [ 512, 3, 2 ] ],  # 5-P4/16
+    [ -1, 9, seC3, [ 512 ] ],  # 6
+
+    [ -1, 1, Conv, [ 1024, 3, 2 ] ],  # 7-P4/16
+    [ -1, 9, seC3, [ 1024 ] ],  # 8
+
+    [ -1, 1, Conv, [ 2048, 3, 2 ] ],  # 9-P5/32
+    [ -1, 1, SPP, [ 2048, [ 5, 9, 13 ] ] ],  # 10
+    [ -1, 3, seC3, [ 2048, False ] ],  # 11
+  ]
+
+# YOLOv5 head
+head:
+  [ [ -1, 1, Conv, [ 1024, 1, 1 ] ],  # 12  #20*20
+
+    [ -1, 1, nn.Upsample, [ None, 2, 'nearest' ] ],  # 13
+
+    [ [ -1, 8 ], 1, Concat, [ 1 ] ],  # cat backbone P4  # 14
+    #这里的来源应该改成[-1,8]
+
+    [ -1, 3, seC3, [ 1024, False ] ],  # 15
+    [ -1, 1, Conv, [ 512, 1, 1 ] ], #40*40 16
+
+    [ -1, 1, nn.Upsample, [ None, 2, 'nearest' ] ],  # 17
+
+    [ [ -1, 6 ], 1, Concat, [ 1 ] ],  # 18 cat backbone P3   80*80
+    # 这里的来源应该改成[-1,6]
+
+    [ -1, 3, seC3, [ 512, False ] ],  # 19 (P3/8-small)  80*80
+    [ -1, 1, Conv, [ 256, 1, 1 ] ],  # 20
+
+    [ -1, 1, nn.Upsample, [ None, 2, 'nearest' ] ],  # 21
+
+    [ [ -1, 4 ], 1, Concat, [ 1 ] ],  # cat backbone P3  # 22
+    # 这里应该改成[-1,4]
+
+    [ -1, 3, seC3, [ 256, False ] ],  # 17 (P3/8-small)23
+
+    [ -1, 1, Conv, [ 256, 3, 2 ] ],  # 24
+
+    [ [ -1, 20 ], 1, Concat, [ 1 ] ],  # cat head P4   25
+    # [-1,20]
+    [ -1, 3, seC3, [ 256, False ] ],  #  (P4/16-medium)26
+    [ -1, 1, Conv, [ 256, 3, 2 ] ],  #27   80*80
+
+    [ [ -1, 16 ], 1, Concat, [ 1 ] ], #28 80*80
+    # [-1,16]
+    [ -1, 3, seC3, [ 512, False ] ], #29 80*80
+    [ -1, 1, Conv, [ 512, 3, 2 ] ],  # 30
+
+    [ [ -1, 12 ], 1, Concat, [ 1 ] ],  # cat head P5  # 31
+    # [-1,12]
+    [ -1, 3, seC3, [ 1024, False ] ],  # 23 (P5/32-large)  # 32
+
+    [ [ 23, 26, 29,32 ], 1, Detect, [ nc, anchors ] ],  # Detect(P3, P4, P5)  # 33
+    # [23,26,29,32]
+  ]

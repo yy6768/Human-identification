@@ -92,14 +92,14 @@ def kmeans(boxes, k, dist=np.median):
 a = np.array([[1, 2, 3, 4], [5, 7, 6, 8]])
 print(translate_boxes(a))
 
-FILE_ROOT = "C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data/"  # 根路径
+FILE_ROOT = "C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data2/"  # 根路径
 ANNOTATION_ROOT = "Annotations"  # 数据集标签文件夹路径
 ANNOTATION_PATH = FILE_ROOT + ANNOTATION_ROOT
 
-ANCHORS_TXT_PATH = "C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/data/anchors.txt"
+ANCHORS_TXT_PATH = "C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/data/anchors2.txt"
 
 CLUSTERS = 9  # kmeans方法分9类
-CLASS_NAMES = ["pedestrians", "riders", 'partially', 'ignore', 'crowd']
+CLASS_NAMES = ["person"]
 
 
 def load_data(anno_dir, class_names):

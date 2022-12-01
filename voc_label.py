@@ -4,7 +4,7 @@ import os
 from os import getcwd
 
 sets = ['train', 'val', 'test']
-classes = ["pedestrians", "riders", 'partially', 'ignore', 'crowd']  # 改成自己的类别
+classes = ["person"]  # 改成自己的类别
 abs_path = os.getcwd()
 print(abs_path)
 
@@ -24,9 +24,9 @@ def convert(size, box):
 
 
 def convert_annotation(image_id):
-    in_file = open('C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data/Annotations/%s.xml' % (image_id),
+    in_file = open('C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data2/Annotations/%s.xml' % (image_id),
                    encoding='UTF-8')
-    out_file = open('C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data/labels/%s.txt' % (image_id),
+    out_file = open('C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data2/labels/%s.txt' % (image_id),
                     'w')
     tree = ET.parse(in_file)
     root = tree.getroot()
@@ -56,13 +56,13 @@ def convert_annotation(image_id):
 
 wd = getcwd()
 for image_set in sets:
-    if not os.path.exists('C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data/labels/'):
-        os.makedirs('C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data/labels/')
-    image_ids = open('C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data/ImageSets/Main/%s.txt' % (
+    if not os.path.exists('C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data2/labels/'):
+        os.makedirs('C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data2/labels/')
+    image_ids = open('C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data2/ImageSets/Person/%s.txt' % (
         image_set)).read().strip().split()
     list_file = open('people_data/%s.txt' % (image_set), 'w')
     for image_id in image_ids:
         list_file.write(
-            'C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data/images/%s.jpg\n' % (image_id))
+            'C:/Users/12587/Desktop/通知&工作/机器学习与python/yolov5-master/people_data2/JPEGImages/%s.jpg\n' % (image_id))
         convert_annotation(image_id)
     list_file.close()

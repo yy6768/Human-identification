@@ -1,13 +1,13 @@
 # YOLOv5 🚀 by Ultralytics, GPL-3.0 license
 
 # Parameters
-nc: 5  # number of classes
+nc: 1  # number of classes
 depth_multiple: 1.0  # model depth multiple
 width_multiple: 1.0  # layer channel multiple
 anchors:
-  - [8, 18, 13, 34, 17, 62]  # P3/8
-  - [25, 86, 25, 41, 34, 123]  # P4/16
-  - [46, 169, 64, 232, 93, 330]  # P5/32
+  - [19, 46, 37, 97, 65, 162]  # P3/8
+  - [90, 290, 140, 413, 168, 246]  # P4/16
+  - [220, 449, 332, 512, 524, 589]  # P5/32
 
 # YOLOv5 v6.0 backbone
 backbone:
